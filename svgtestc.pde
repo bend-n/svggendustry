@@ -7,22 +7,30 @@ int[][] domCount;
 
 PImage test;
 
-String imageToLoad = "t3.png";
-
 void setup(){
-  size(1000, 1000);
+  size(1000, 400);
   
   
   noSmooth();
   background(0);
   
-  File f = new File(dataPath(""));
-  for(var file:f.listFiles()){
-    if(file.getName().contains(".png")){
-      println(file.getName());
-      generateSVG(file.getAbsolutePath());
+  if (args != null) {
+    if (args[0].toLowerCase() == "help" || args.length < 2) {
+       print("Marching Squares\nUsage: ms INPUT OUTPUT");
+       exit(); // doesnt immediately terminate, so else clause needed
+    } else {
+      generateSVG(args[0], args[1]);
+      exit();
     }
+  } else {
+    File f = new File(dataPath(""));
+    for (var file:f.listFiles()) {
+      if (file.getName().contains(".png")) {
+        String[] dvd = file.getAbsolutePath().split("/");
+        generateSVG(file.getAbsolutePath(), "output/" +dvd[dvd.length-1].split("\\.")[0] + ".svg");
+      }
   }
+}
   
   //todo:
   // add contour cases for image edges within cells [x]
@@ -37,11 +45,9 @@ void setup(){
 
 }
 
-void draw(){
+void draw() {}
 
-}
-
-void generateSVG(String imageloc){
+void generateSVG(String imageloc, String imageout){
   test = loadImage(imageloc);
   test.loadPixels();
 
@@ -71,8 +77,7 @@ void generateSVG(String imageloc){
   rect(0,0,width,height);
   
   var cells = generateCells(scl,corners,test,center,domCount);
-  var dvd = imageloc.split("\\\\");
-  PGraphics svg = createGraphics(test.width, test.height, SVG, "output/"+dvd[dvd.length-1].split("\\.")[0]+".svg");
+  PGraphics svg = createGraphics(test.width, test.height, SVG, imageout);
   svg.beginDraw();
   svg.noStroke();
   boolean[][] mapped = new boolean[test.width][test.height];
