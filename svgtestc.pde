@@ -15,11 +15,19 @@ void setup(){
   background(0);
   
   if (args != null) {
-    if (args[0].toLowerCase() == "help" || args.length < 2) {
-       print("Marching Squares\nUsage: ms INPUT OUTPUT");
-       exit(); // doesnt immediately terminate, so else clause needed
+    if (args[0].toLowerCase() == "help" || args.length % 2 != 0) {
+      print("Marching Squares\nUsage: ms INPUT OUTPUT");
+      exit(); // doesnt immediately terminate, so else clause needed
     } else {
-      generateSVG(args[0], args[1]);
+      for (int i = 0; i < args.length / 2; i++) {
+        try {
+          generateSVG(args[i * 2], args[i * 2 + 1]);
+        } catch (Exception e) {
+          print("generating " + args[i * 2] + " to " + args[i * 2 + 1] + " failed with exception: \n" + e + "\n");
+          exit();
+          break;
+        }
+      }
       exit();
     }
   } else {
